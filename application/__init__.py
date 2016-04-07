@@ -41,7 +41,7 @@ def index():
 
 
 @app.route("/arsenal/item/")
-@app.route("/arsenal/item/<int:page>")
+@app.route("/arsenal/item/<int:page>/")
 def item(page=0):
     from models import Item
     start = page * PAGE_SIZE
@@ -50,7 +50,7 @@ def item(page=0):
     return dumps(articals)
 
 
-@app.route("/arsenal/artical/<string:id>")
+@app.route("/arsenal/artical/<string:id>/")
 def artical(id):
     from models import Artical
     artical = Artical.objects(artical_id=id).get()
