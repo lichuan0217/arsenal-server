@@ -19,8 +19,8 @@ def convert(objects):
         item['content'] = obj.card_content
         item['thumbnail'] = obj.card_small_photo
         item['source'] = obj.card_src
-        item['goto'] = obj.full_text_url
-        item['articalid'] = obj.artical_id
+        item['fullTextUrl'] = obj.full_text_url
+        item['articalId'] = obj.artical_id
         articals.append(item)
     return articals
 
