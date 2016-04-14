@@ -23,3 +23,5 @@ class Artical(db.Document):
 	artical_editor = db.StringField()
 	artical_src = db.StringField(max_length=100)
 	artical_id = db.StringField(max_length=20)
+	artical_type = db.StringField()
+	artical_video_play = db.URLField()
