@@ -24,6 +24,7 @@ def convert(objects):
         articals.append(item)
     return articals
 
+
 def convert_artical(src):
     ret = dict()
     ret['header'] = src.artical_title
@@ -48,7 +49,7 @@ def item(page=0):
     from models import Item
     start = page * PAGE_SIZE
     end = (page + 1) * PAGE_SIZE
-    articals = convert(Item.objects.order_by('-artical_id')[start: end])
+    articals = convert(Item.objects.order_by('-artical_id')[start:end])
     return dumps(articals)
 
 
