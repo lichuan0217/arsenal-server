@@ -32,6 +32,8 @@ def convert_artical(src):
     ret['date'] = src.artical_date
     ret['editor'] = src.artical_editor
     ret['source'] = src.artical_src
+    ret['type'] = src.artical_type
+    ret['video'] = src.artical_video_play
     return ret
 
 
@@ -46,7 +48,7 @@ def item(page=0):
     from models import Item
     start = page * PAGE_SIZE
     end = (page + 1) * PAGE_SIZE
-    articals = convert(Item.objects[start: end])
+    articals = convert(Item.objects.order_by('-artical_id')[start: end])
     return dumps(articals)
 
 
