@@ -25,3 +25,8 @@ class Artical(db.Document):
     artical_id = db.StringField(max_length=20)
     artical_type = db.StringField()
     artical_video_play = db.URLField()
+
+
+class Favorite(db.Document):
+    user_id = db.StringField(required=True)
+    article_list = db.ListField(db.StringField())
