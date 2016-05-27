@@ -79,7 +79,7 @@ def article_with_user(article_id):
     return dumps(convert_artical(article, False))
 
 
-@app.route("/arsenal/favorites", methods=['POST'])
+@app.route("/arsenal/favorites/", methods=['POST'])
 def post_favorite():
     if not request.json or not 'user_id' in request.json or not 'article_id' in request.json:
         abort(400)
@@ -96,7 +96,7 @@ def post_favorite():
     return jsonify({"favorite": favorite}), 201
 
 
-@app.route("/arsenal/favorites/<string:id>", methods=['GET'])
+@app.route("/arsenal/favorites/<string:id>/", methods=['GET'])
 def get_favorite(id):
     from models import Favorite
     favorite = Favorite.objects(user_id=id).get()
