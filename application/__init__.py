@@ -93,7 +93,7 @@ def post_favorite():
         favorite = Favorite(user_id=user_id)
     favorite.article_list.append(article_id)
     favorite.save()
-    return jsonify({"favorite": favorite}), 201
+    return jsonify({"response_msg": "success", "response_code": 201}), 201
 
 
 @app.route("/arsenal/favorites/<string:id>/", methods=['GET'])
@@ -105,12 +105,16 @@ def get_favorite(id):
 
 @app.errorhandler(404)
 def not_found(error):
-    return make_response(jsonify({'error': 'Not Found'}), 404)
+    return make_response(jsonify(
+        {'response_msg': 'Not Found', 'response_code': 404}
+        ), 404)
 
 
 @app.errorhandler(400)
 def error_request(error):
-    return make_response(jsonify({'error': 'Bad Request'}), 400)
+    return make_response(jsonify(
+        {'response_msg': 'Bad Request', 'response_code': 400}
+        ), 400)
 
 
 @app.route("/arsenal/spider/")
