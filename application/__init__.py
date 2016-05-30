@@ -103,18 +103,32 @@ def get_favorite(id):
     return jsonify({"favorite": favorite})
 
 
+@app.route("/arsenal/favorites/<string:user_id>/<string:article_id>/",
+           methods=['DELETE'])
+def del_favorite(user_id, article_id):
+    from models import Favorite
+    obj = Favorite.objects(user_id=user_id)
+    if obj:
+        favorite = obj.get()
+        if article_id in favorite.article_list:
+            obj.update_one(pull__article_list=article_id)
+            return jsonify({"response_msg": "success",
+                            "response_code": 200}), 200
+    return jsonify({"response_msg": "Not Found", "response_code": 404}), 404
+
+
 @app.errorhandler(404)
 def not_found(error):
-    return make_response(jsonify(
-        {'response_msg': 'Not Found', 'response_code': 404}
-        ), 404)
+    return make_response(
+        jsonify({'response_msg': 'Not Found',
+                 'response_code': 404}), 404)
 
 
 @app.errorhandler(400)
 def error_request(error):
-    return make_response(jsonify(
-        {'response_msg': 'Bad Request', 'response_code': 400}
-        ), 400)
+    return make_response(
+        jsonify({'response_msg': 'Bad Request',
+                 'response_code': 400}), 400)
 
 
 @app.route("/arsenal/spider/")
