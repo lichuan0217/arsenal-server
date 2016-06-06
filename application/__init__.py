@@ -1,42 +1,15 @@
 from flask import Flask, jsonify, abort, make_response, request
 from flask.ext.mongoengine import MongoEngine
 from bson.json_util import dumps
+from helper import convert_artical_to_dict, convert_items_to_list
+import subprocess
 
 app = Flask(__name__)
 app.config["MONGODB_SETTINGS"] = {'DB': "arsenal"}
 app.config["SECRET_KEY"] = "KeepThisS3cr3t"
 
 PAGE_SIZE = 30
-
 db = MongoEngine(app)
-
-
-def convert(objects):
-    articals = list()
-    for obj in objects:
-        item = dict()
-        item['header'] = obj.card_header
-        item['content'] = obj.card_content
-        item['thumbnail'] = obj.card_small_photo
-        item['source'] = obj.card_src
-        item['fullTextUrl'] = obj.full_text_url
-        item['articalId'] = obj.artical_id
-        articals.append(item)
-    return articals
-
-
-def convert_artical(src, isFavorite):
-    ret = dict()
-    ret['header'] = src.artical_title
-    ret['picture_src'] = src.artical_important_pic
-    ret['content'] = src.artical_main_content
-    ret['date'] = src.artical_date
-    ret['editor'] = src.artical_editor
-    ret['source'] = src.artical_src
-    ret['type'] = src.artical_type
-    ret['video'] = src.artical_video_play
-    ret['favorite'] = isFavorite
-    return ret
 
 
 @app.route("/")
@@ -50,7 +23,8 @@ def item(page=0):
     from models import Item
     start = page * PAGE_SIZE
     end = (page + 1) * PAGE_SIZE
-    articals = convert(Item.objects.order_by('-artical_id')[start:end])
+    articals = convert_items_to_list(Item.objects.order_by('-artical_id')[
+        start:end])
     return dumps(articals)
 
 
@@ -58,7 +32,7 @@ def item(page=0):
 def artical(id):
     from models import Artical
     artical = Artical.objects(artical_id=id).get()
-    return dumps(convert_artical(artical, False))
+    return dumps(convert_artical_to_dict(artical, False))
 
 
 @app.route("/arsenal/artical/<string:article_id>/", methods=['POST'])
@@ -75,8 +49,8 @@ def article_with_user(article_id):
         favorite = obj.get()
         article_list = favorite.article_list
         if article_id in article_list:
-            return dumps(convert_artical(article, True))
-    return dumps(convert_artical(article, False))
+            return dumps(convert_artical_to_dict(article, True))
+    return dumps(convert_artical_to_dict(article, False))
 
 
 @app.route("/arsenal/favorites/", methods=['POST'])
@@ -98,9 +72,15 @@ def post_favorite():
 
 @app.route("/arsenal/favorites/<string:id>/", methods=['GET'])
 def get_favorite(id):
-    from models import Favorite
-    favorite = Favorite.objects(user_id=id).get()
-    return jsonify({"favorite": favorite})
+    from models import Favorite, Item
+    favorite_items = []
+    obj = Favorite.objects(user_id=id)
+    if obj:
+        favorite = obj.get()
+        for article_id in favorite.article_list:
+            item = Item.objects(artical_id=article_id).get()
+            favorite_items.append(item)
+    return dumps(convert_items_to_list(favorite_items))
 
 
 @app.route("/arsenal/favorites/<string:user_id>/<string:article_id>/",
@@ -133,4 +113,5 @@ def error_request(error):
 
 @app.route("/arsenal/spider/")
 def spider():
-    pass
+    rc = subprocess.call("bash application/spider.sh", shell=True)
+    return str(rc)
