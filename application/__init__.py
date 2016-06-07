@@ -66,6 +66,7 @@ def post_favorite():
     else:
         favorite = Favorite(user_id=user_id)
     favorite.article_list.append(article_id)
+    favorite.article_list.sort(reverse=True)
     favorite.save()
     return jsonify({"response_msg": "success", "response_code": 201}), 201
 
