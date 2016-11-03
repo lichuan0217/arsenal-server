@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, abort, make_response, request
-from flask.ext.mongoengine import MongoEngine
+from flask_mongoengine import MongoEngine
 from bson.json_util import dumps
 from helper import convert_artical_to_dict, convert_items_to_list
 import subprocess
