@@ -28,14 +28,14 @@ def item(page=0):
     return dumps(articals)
 
 
-@app.route("/arsenal/artical/<string:id>/", methods=['GET'])
+@app.route("/arsenal/article/<string:id>/", methods=['GET'])
 def artical(id):
     from models import Artical
     artical = Artical.objects(artical_id=id).get()
     return dumps(convert_artical_to_dict(artical, False))
 
 
-@app.route("/arsenal/artical/<string:article_id>/", methods=['POST'])
+@app.route("/arsenal/article/<string:article_id>/", methods=['POST'])
 def article_with_user(article_id):
     if not request.json:
         abort(400)

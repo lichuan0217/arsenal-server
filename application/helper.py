@@ -10,7 +10,7 @@ def convert_items_to_list(objects):
         item['thumbnail'] = obj.card_small_photo
         item['source'] = obj.card_src
         item['fullTextUrl'] = obj.full_text_url
-        item['articalId'] = obj.artical_id
+        item['articleId'] = obj.artical_id
         articals.append(item)
     return articals
 
